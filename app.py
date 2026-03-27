@@ -1,5 +1,5 @@
 # app.py — DLHub
-# Fase 2: YouTube migrado a Blueprint. routes.py ya no se usa.
+# Fase 3: TikTok agregado.
 
 import threading
 import webbrowser
@@ -7,6 +7,7 @@ from flask import Flask, render_template
 
 from utils import BASE_DIR
 from platforms.youtube.routes import youtube_bp
+from platforms.tiktok.routes  import tiktok_bp
 
 app = Flask(
     __name__,
@@ -21,12 +22,11 @@ def home():
 
 # ─── Plataformas ───────────────────────────────────────────────────────────────
 app.register_blueprint(youtube_bp, url_prefix='/youtube')
+app.register_blueprint(tiktok_bp,  url_prefix='/tiktok')
 
 # ─── Fases futuras (descomentar cuando estén listos) ──────────────────────────
-# from platforms.tiktok.routes    import tiktok_bp
 # from platforms.instagram.routes import instagram_bp
 # from platforms.twitter.routes   import twitter_bp
-# app.register_blueprint(tiktok_bp,    url_prefix='/tiktok')
 # app.register_blueprint(instagram_bp, url_prefix='/instagram')
 # app.register_blueprint(twitter_bp,   url_prefix='/twitter')
 

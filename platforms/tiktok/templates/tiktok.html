@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TikTok Descargas</title>
+
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/favicon.svg') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/flip.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/multi.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/cards.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/platforms/tiktok.css') }}">
+</head>
+<body>
+<div class="container">
+
+    <div class="flip-wrapper" id="flip-wrapper">
+        <div class="flip-inner" id="flip-inner">
+
+            <!-- ── CARA FRONTAL: Vista simple ── -->
+            <div class="flip-face flip-front" id="flip-front">
+                <div class="main-card">
+
+                    <div class="card-topbar">
+                        <a href="/" class="btn-home" title="Volver al inicio">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M15 18l-6-6 6-6"/>
+                            </svg>
+                        </a>
+                        <h2>TIKTOK DESCARGAS</h2>
+                        <div style="display:flex; gap:8px; align-items:center;">
+                            <button class="btn-folder" id="btn-folder"
+                                    onclick="elegirCarpeta()" title="Elegir carpeta de descarga">📁</button>
+                            <button class="btn-flip" onclick="flipToBack()">⇄ Múltiples</button>
+                        </div>
+                    </div>
+
+                    <!-- Badge sin marca de agua -->
+                    <div class="tt-nowatermark-bar">
+                        <span class="tt-nowatermark-icon">✦</span>
+                        Sin marca de agua · Mejor calidad disponible
+                    </div>
+
+                    <!-- Carpeta destino -->
+                    <div class="folder-bar" id="folder-bar">
+                        <span class="folder-bar-label">Destino:</span>
+                        <span class="folder-bar-path" id="folder-path">cargando...</span>
+                    </div>
+
+                    <!-- Selector de formato -->
+                    <div class="section">
+                        <label>Formato de salida</label>
+                        <div class="toggle-group">
+                            <button class="toggle-btn" id="mode-video" onclick="setMode('video')">VIDEO (MP4)</button>
+                            <button class="toggle-btn" id="mode-audio" onclick="setMode('audio')">AUDIO (MP3)</button>
+                        </div>
+                    </div>
+
+                    <!-- URL -->
+                    <div class="section">
+                        <input type="text" id="video-url"
+                               placeholder="https://www.tiktok.com/@usuario/video/...">
+                        <button class="btn-main" id="btn-analyze" onclick="analizar()">
+                            Buscar
+                        </button>
+                    </div>
+
+                    <!-- Resultado individual -->
+                    <div id="result" style="display:none;">
+                        <div class="thumb-container">
+                            <img id="thumb" class="thumb" alt="">
+                        </div>
+                        <p id="title" class="video-title"></p>
+                        <div class="video-meta">
+                            <span id="meta-dur"  style="display:none"></span>
+                            <span id="meta-peso" style="display:none"></span>
+                        </div>
+                        <!-- TikTok no tiene selector de calidad -->
+                        <div class="tt-quality-note" id="tt-quality-note">
+                            Mejor calidad disponible
+                        </div>
+                        <button id="btn-download" class="btn-main" onclick="iniciarDescarga()">
+                            Descargar
+                        </button>
+                    </div>
+
+                    <!-- Resultado colección -->
+                    <div id="result-collection" style="display:none;">
+                        <div class="tt-collection-header">
+                            <span id="collection-count"></span>
+                            <span class="tt-collection-note">Se descargarán todos</span>
+                        </div>
+                        <div id="collection-list" class="tt-collection-list"></div>
+                        <button id="btn-download-collection" class="btn-main"
+                                style="background:var(--tt-accent); color:#000;"
+                                onclick="iniciarDescargaColeccion()">
+                            Descargar colección
+                        </button>
+                    </div>
+
+                </div>
+            </div><!-- /flip-front -->
+
+            <!-- ── CARA TRASERA: Vista múltiple ── -->
+            <div class="flip-face flip-back" id="flip-back">
+                <div class="main-card">
+
+                    <div class="card-topbar">
+                        <a href="/" class="btn-home" title="Volver al inicio">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M15 18l-6-6 6-6"/>
+                            </svg>
+                        </a>
+                        <button class="btn-flip" onclick="flipToFront()">⇄ Única</button>
+                        <h2>MÚLTIPLES</h2>
+                        <div style="width:72px"></div>
+                    </div>
+
+                    <div class="tt-nowatermark-bar">
+                        <span class="tt-nowatermark-icon">✦</span>
+                        Sin marca de agua · Mejor calidad disponible
+                    </div>
+
+                    <div class="section">
+                        <label>URLs (una por línea)</label>
+                        <textarea id="multi-urls"
+                                  placeholder="https://www.tiktok.com/@usuario/video/...&#10;https://vm.tiktok.com/..."></textarea>
+                        <button class="btn-main btn-analyze-multi"
+                                id="btn-analyze-multi" onclick="analizarMulti()">
+                            Buscar
+                        </button>
+                    </div>
+
+                    <div id="multi-controls" style="display:none;">
+
+                        <div class="multi-global-bar">
+                            <div class="multi-global-left">
+                                <label style="margin:0">GLOBAL</label>
+                                <div class="toggle-group mini">
+                                    <button class="toggle-btn" id="global-mode-video"
+                                            onclick="setGlobalMode('video')">VIDEO</button>
+                                    <button class="toggle-btn" id="global-mode-audio"
+                                            onclick="setGlobalMode('audio')">AUDIO</button>
+                                </div>
+                            </div>
+                            <div class="multi-global-right">
+                                <button class="btn-small btn-sel-all"
+                                        onclick="seleccionarTodos(true)">✓ TODAS</button>
+                                <button class="btn-small btn-desel-all"
+                                        onclick="seleccionarTodos(false)">✗ NINGUNA</button>
+                            </div>
+                        </div>
+
+                        <div id="multi-list"></div>
+
+                        <div id="multi-peso-total" class="multi-peso-total" style="display:none;">
+                            <span class="multi-peso-label">Peso estimado:</span>
+                            <span class="multi-peso-valor">—</span>
+                        </div>
+
+                        <div class="multi-actions">
+                            <button class="btn-main btn-dl-selected"
+                                    onclick="descargarSeleccionados()">
+                                Descargar
+                            </button>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div><!-- /flip-back -->
+
+        </div>
+    </div>
+
+    <!-- Sesión + stack -->
+    <div id="session-bar" style="display:none;">
+        <span class="session-label">Sesión:</span>
+        <span id="session-size">0 KB</span>
+        <span id="session-count" class="session-count"></span>
+    </div>
+
+    <div id="downloads-header" style="display:none;">
+        <span id="downloads-count"></span>
+        <button class="btn-small btn-clear-all"
+                onclick="eliminarTodasTarjetas()">Eliminar tarjetas</button>
+    </div>
+
+    <div id="downloads-stack"></div>
+
+</div>
+
+<script>window.API_PREFIX = '/tiktok';</script>
+
+<script src="{{ url_for('static', filename='js/core.js') }}"></script>
+<script src="{{ url_for('static', filename='js/session.js') }}"></script>
+<script src="{{ url_for('static', filename='js/folder.js') }}"></script>
+<script src="{{ url_for('static', filename='js/cards.js') }}"></script>
+<script src="{{ url_for('static', filename='js/tiktok_simple.js') }}"></script>
+<script src="{{ url_for('static', filename='js/multi.js') }}"></script>
+</body>
+</html>

@@ -1,5 +1,5 @@
 // ── Estado vista múltiple ─────────────────────────────────────────────────────
-let multiItems    = [];   // array de { data, modo, formatoId }
+let multiItems    = [];
 let globalMode    = 'video';
 
 // ── Modo global ───────────────────────────────────────────────────────────────
@@ -9,7 +9,6 @@ function setGlobalMode(m) {
         .forEach(b => b.classList.remove('active'));
     document.getElementById('global-mode-' + m).classList.add('active');
 
-    // Propagar a todos los items
     multiItems.forEach((item, i) => {
         item.modo = m;
         _actualizarToggleItem(i, m);
@@ -17,13 +16,12 @@ function setGlobalMode(m) {
         _actualizarSizeItem(i);
     });
     _actualizarPesoTotalMulti();
-
     _reconstruirCalidadesGlobal();
 }
 
 function aplicarCalidadGlobal() {
     const sel = document.getElementById('global-quality');
-    const res = parseInt(sel.value);   // res_num objetivo, o NaN si no hay selección
+    const res = parseInt(sel.value);
     if (!res) return;
 
     multiItems.forEach((item, i) => {
@@ -31,12 +29,8 @@ function aplicarCalidadGlobal() {
         const formatos = item.data.formatos || [];
         if (!formatos.length) return;
 
-        // Buscar el formato exacto primero; si no existe, usar el de mayor
-        // resolución disponible que no supere la pedida (best-fit descendente).
-        // Ejemplo: se pide 1440p, el video solo llega a 720p → se elige 720p.
         let fmt = formatos.find(f => f.res_num === res);
         if (!fmt) {
-            // Ordenados de mayor a menor; tomar el primero que sea <= res
             const menores = formatos.filter(f => f.res_num <= res);
             fmt = menores.length ? menores[0] : formatos[formatos.length - 1];
         }
@@ -63,7 +57,7 @@ async function analizarMulti() {
     btn.disabled  = true;
 
     try {
-        const res  = await fetch('/analizar_multiple', {
+        const res  = await fetch(`${window.API_PREFIX}/analizar_multiple`, {
             method:  'POST',
             headers: { 'Content-Type': 'application/json' },
             body:    JSON.stringify({ urls }),
@@ -72,7 +66,6 @@ async function analizarMulti() {
 
         if (data.error) throw new Error(data.error);
 
-        // Construir estado interno
         multiItems = (data.items || []).map(d => ({
             data:      d,
             modo:      globalMode,
@@ -80,7 +73,6 @@ async function analizarMulti() {
             selected:  true,
         }));
 
-        // Mostrar errores si los hay
         if (data.errores && data.errores.length) {
             data.errores.forEach(e => {
                 multiItems.push({ error: true, url: e.url, msg: e.error, selected: false });
@@ -159,7 +151,6 @@ function _crearItemNormal(i, item) {
     el.className = 'multi-item' + (item.selected ? '' : ' deselected');
     el.id        = `mi-${i}`;
 
-    // Opciones del select de calidad
     const optsHtml = (d.formatos || []).map(f =>
         `<option value="${escHtml(f.id)}" data-size="${f.size || ''}" data-res="${f.res_num || 0}">
             ${escHtml(f.label)}${f.size ? ' — ' + formatPeso(f.size) : ''}
@@ -195,7 +186,6 @@ function _crearItemNormal(i, item) {
         </div>
     `;
 
-    // Seleccionar el formato guardado y actualizar tamaño
     setTimeout(() => {
         const sel = document.getElementById(`mi-select-${i}`);
         if (sel && item.formatoId) sel.value = item.formatoId;
@@ -276,7 +266,6 @@ function _actualizarSizeItem(i) {
 }
 
 function _reconstruirCalidadesGlobal() {
-    // Unión de resoluciones disponibles en todos los items de video
     const resSeen = new Set();
     const sel     = document.getElementById('global-quality');
     if (!sel) return;
@@ -315,7 +304,7 @@ function descargarSeleccionados() {
         const url       = d.url;
         const key       = `${url}|${formatoId}|${tipo}`;
 
-        if (descargasActivas[key]) return;  // ya en curso, saltar
+        if (descargasActivas[key]) return;
 
         const fmt       = (d.formatos || []).find(f => f.id === formatoId);
         const badge     = tipo === 'audio' ? 'MP3' : (fmt ? fmt.label : '');
@@ -331,5 +320,4 @@ function descargarSeleccionados() {
             badge, sizeBytes, key,
         });
     });
-
 }

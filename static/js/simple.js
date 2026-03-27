@@ -51,7 +51,6 @@ function renderVideoData(data) {
     updateQualitySizeSimple();
     resetBtnDownload();
     updateSimpleUI();
-    // FIX: recalcular altura del flip después de mostrar el resultado
     setTimeout(() => sincronizarAlturaFlip(), 50);
 }
 
@@ -109,7 +108,7 @@ async function analizar() {
     urlInput.disabled = true;
 
     try {
-        const res  = await fetch('/analizar', {
+        const res  = await fetch(`${window.API_PREFIX}/analizar`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ url }),

@@ -24,7 +24,6 @@ function crearTarjeta(id, titulo, badge, sizeLabel, thumbnail) {
     card.className = 'dl-card';
     card.id        = id;
 
-    // El banner va ANTES del dl-body para que no interfiera con X ni chevron
     card.innerHTML = `
         <div class="dl-expand">
             <img class="dl-expand-thumb" src="${escHtml(thumbnail)}" alt="${escHtml(titulo)}">
@@ -79,13 +78,11 @@ function clickCerrar(id) {
     const card = document.getElementById(id);
     if (!card) return;
 
-    // Si ya terminó o tiene error → cerrar directo sin confirmación
     if (card.classList.contains('finished')) {
         _cerrarTarjetaDirecto(id);
         return;
     }
 
-    // En progreso: primer clic abre banner, segundo clic en X confirma cancelación
     const banner    = document.getElementById(id + '-banner');
     const yaAbierto = card.classList.contains('cancel-pending');
 
@@ -94,7 +91,6 @@ function clickCerrar(id) {
     } else {
         card.classList.add('cancel-pending');
         if (banner) banner.classList.add('visible');
-        // Ocultar X y chevron para que no se superpongan con el banner
         const closeBtn = document.getElementById(id + '-close');
         const chevron  = card.querySelector('.dl-chevron');
         if (closeBtn) closeBtn.style.display = 'none';
@@ -114,18 +110,15 @@ function descartarCancelar(id) {
 }
 
 function confirmarCancelar(id) {
-    // Notificar al servidor: mata el proceso y borra el archivo parcial
     const token = cancelTokens[id];
     if (token) {
-        fetch(`/cancelar/${token}`, { method: 'POST' }).catch(() => {});
+        fetch(`${window.API_PREFIX}/cancelar/${token}`, { method: 'POST' }).catch(() => {});
         delete cancelTokens[id];
     }
-    // Cerrar EventSource
     if (eventSources[id]) {
         try { eventSources[id].close(); } catch (_) {}
         delete eventSources[id];
     }
-    // Limpiar clave activa y disparar onComplete para resetear botones
     const cb = _onCompleteCallbacks[id];
     if (cb) { cb(); delete _onCompleteCallbacks[id]; }
     const key = _cardKeys[id];
@@ -177,7 +170,6 @@ function actualizarTarjeta(id, p, key) {
         descartarCancelar(id);
         card.classList.add('finished');
 
-        // Sumar al contador de sesión usando el tamaño real del archivo
         const sizeBytes = parseInt(p.SIZE || '0');
         if (sizeBytes > 0) {
             window.dispatchEvent(new CustomEvent('descarga-completada', { detail: { bytes: sizeBytes } }));
@@ -211,9 +203,9 @@ function mostrarErrorTarjeta(id, msg) {
 
 
 // ── Estado por tarjeta ────────────────────────────────────────────────────────
-const cancelTokens       = {};  // cardId → token servidor
-const _onCompleteCallbacks = {}; // cardId → onComplete fn (para resetear botón al cancelar)
-const _cardKeys          = {};  // cardId → key de descargasActivas
+const cancelTokens         = {};
+const _onCompleteCallbacks = {};
+const _cardKeys            = {};
 
 // ── Lanzar descarga ───────────────────────────────────────────────────────────
 function lanzarDescarga({ url, tipo, formato, titulo, thumbnail, badge, sizeBytes, key, onComplete }) {
@@ -236,7 +228,7 @@ function lanzarDescarga({ url, tipo, formato, titulo, thumbnail, badge, sizeByte
         `token=${token}`,
     ].join('&');
 
-    const es = new EventSource(`/descargar_stream?${query}`);
+    const es = new EventSource(`${window.API_PREFIX}/descargar_stream?${query}`);
     eventSources[cardId] = es;
 
     let terminadoOk = false;

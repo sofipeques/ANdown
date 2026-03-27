@@ -371,6 +371,40 @@ a { text-decoration: none; color: inherit; }
 .platform-card:nth-child(3) { animation: fadeUp 0.5s ease 0.29s both; }
 .platform-card:nth-child(4) { animation: fadeUp 0.5s ease 0.36s both; }
 
+/* ---------- TikTok (activo) ---------- */
+.platform-card--tiktok[data-status="active"]:hover {
+  transform: translateY(-4px) scale(1.01);
+  border-color: rgba(105,201,208,0.35);
+  box-shadow:
+    0 0 0 1px rgba(105,201,208,0.1),
+    0 20px 60px rgba(105,201,208,0.10),
+    0 4px 20px rgba(0,0,0,0.4);
+}
+
+.platform-card--tiktok[data-status="active"]:hover .platform-card__bg {
+  opacity: 1;
+  background: radial-gradient(ellipse at 20% 50%, var(--tt-glow) 0%, transparent 70%);
+}
+
+.platform-card--tiktok[data-status="active"]:hover .platform-card__shine {
+  opacity: 1;
+}
+
+.platform-card--tiktok[data-status="active"]:hover .platform-card__icon svg {
+  transform: scale(1.08);
+}
+
+.platform-card--tiktok[data-status="active"]:hover .platform-card__arrow {
+  opacity: 1;
+  transform: translateX(0);
+  color: var(--tt);
+}
+
+.platform-card--tiktok[data-status="active"]:active {
+  transform: translateY(-1px) scale(0.99);
+  transition-duration: 0.1s;
+}
+
 /* ---------- Shake (tarjetas próximamente) ---------- */
 @keyframes shake {
   0%, 100% { transform: translateX(0); }

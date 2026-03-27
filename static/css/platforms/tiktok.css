@@ -1,0 +1,181 @@
+/* ============================================================
+   platforms/tiktok.css
+   Estilos específicos de TikTok — cargado solo en /tiktok
+   ============================================================ */
+
+:root {
+    --tt-accent:  #69c9d0;   /* cian característico de TikTok */
+    --tt-accent2: #ee1d52;   /* rojo TikTok */
+}
+
+/* ── Topbar h2 color ─────────────────────────────────────────── */
+.main-card h2 {
+    background: linear-gradient(90deg, var(--tt-accent), var(--tt-accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* ── Badge sin marca de agua ─────────────────────────────────── */
+.tt-nowatermark-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: .75em;
+    font-weight: 600;
+    color: var(--tt-accent);
+    background: rgba(105,201,208,0.08);
+    border: 1px solid rgba(105,201,208,0.18);
+    border-radius: 8px;
+    padding: 7px 12px;
+    margin: -10px 0 14px;
+    letter-spacing: .02em;
+}
+
+.tt-nowatermark-icon {
+    font-size: .9em;
+    color: var(--tt-accent2);
+}
+
+/* ── Nota de calidad (reemplaza selector) ────────────────────── */
+.tt-quality-note {
+    font-size: .78em;
+    color: #666;
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-bottom: 4px;
+    text-align: center;
+    letter-spacing: .02em;
+}
+
+/* ── Colección ───────────────────────────────────────────────── */
+.tt-collection-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    padding: 0 2px;
+}
+
+#collection-count {
+    font-size: .85em;
+    font-weight: 700;
+    color: var(--tt-accent);
+}
+
+.tt-collection-note {
+    font-size: .72em;
+    color: #555;
+}
+
+.tt-collection-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 14px;
+    max-height: 260px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.tt-collection-list::-webkit-scrollbar { width: 4px; }
+.tt-collection-list::-webkit-scrollbar-track { background: #1a1a1a; border-radius: 2px; }
+.tt-collection-list::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+
+.tt-collection-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #1e1e1e;
+    border: 1px solid #2a2a2a;
+    border-radius: 8px;
+    padding: 8px 10px;
+}
+
+.tt-collection-thumb {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
+    background: #000;
+}
+
+.tt-collection-title {
+    flex: 1;
+    font-size: .8em;
+    color: #ccc;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.tt-collection-dur {
+    font-size: .72em;
+    color: #555;
+    flex-shrink: 0;
+}
+
+.tt-collection-more {
+    font-size: .78em;
+    color: #555;
+    text-align: center;
+    padding: 6px;
+    border: 1px dashed #2a2a2a;
+    border-radius: 6px;
+}
+
+/* ── Badge "Mejor calidad" en items de múltiple ──────────────── */
+.tt-quality-badge {
+    color: var(--tt-accent);
+    background: rgba(105,201,208,0.08);
+    border: 1px solid rgba(105,201,208,0.15);
+    font-style: normal !important;
+    cursor: default;
+}
+
+/* ── Botón volver al inicio ───────────────────────────────────── */
+.btn-home {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    background: transparent;
+    color: rgba(255, 255, 255, 0.45);
+    cursor: pointer;
+    flex-shrink: 0;
+    text-decoration: none;
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease;
+}
+
+.btn-home svg {
+    width: 16px;
+    height: 16px;
+    display: block;
+    pointer-events: none;
+}
+
+.btn-home:hover {
+    background: rgba(105, 201, 208, 0.08);
+    border-color: rgba(105, 201, 208, 0.3);
+    color: var(--tt-accent);
+}
+
+.btn-home:active {
+    transform: scale(0.95);
+    transition-duration: 0.08s;
+}
+
+/* ── Botón download con color TikTok en colección ─────────────── */
+#btn-download-collection {
+    background: var(--tt-accent) !important;
+    color: #000 !important;
+}

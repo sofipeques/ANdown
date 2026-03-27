@@ -1,13 +1,14 @@
 # app.py — DLHub
-# Fase 3: TikTok agregado.
+# Fase 4: Instagram agregado.
 
 import threading
 import webbrowser
 from flask import Flask, render_template
 
 from utils import BASE_DIR
-from platforms.youtube.routes import youtube_bp
-from platforms.tiktok.routes  import tiktok_bp
+from platforms.youtube.routes   import youtube_bp
+from platforms.tiktok.routes    import tiktok_bp
+from platforms.instagram.routes import instagram_bp
 
 app = Flask(
     __name__,
@@ -21,14 +22,13 @@ def home():
     return render_template('home.html')
 
 # ─── Plataformas ───────────────────────────────────────────────────────────────
-app.register_blueprint(youtube_bp, url_prefix='/youtube')
-app.register_blueprint(tiktok_bp,  url_prefix='/tiktok')
+app.register_blueprint(youtube_bp,   url_prefix='/youtube')
+app.register_blueprint(tiktok_bp,    url_prefix='/tiktok')
+app.register_blueprint(instagram_bp, url_prefix='/instagram')
 
-# ─── Fases futuras (descomentar cuando estén listos) ──────────────────────────
-# from platforms.instagram.routes import instagram_bp
-# from platforms.twitter.routes   import twitter_bp
-# app.register_blueprint(instagram_bp, url_prefix='/instagram')
-# app.register_blueprint(twitter_bp,   url_prefix='/twitter')
+# ─── Fases futuras ────────────────────────────────────────────────────────────
+# from platforms.twitter.routes import twitter_bp
+# app.register_blueprint(twitter_bp, url_prefix='/twitter')
 
 
 def _abrir_navegador():

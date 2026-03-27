@@ -437,3 +437,35 @@ a { text-decoration: none; color: inherit; }
     display: none;
   }
 }
+
+/* ── Instagram (activo) — agregar al final de home.css ── */
+.platform-card--instagram[data-status="active"]:hover {
+  transform: translateY(-4px) scale(1.01);
+  border-color: rgba(193,53,132,0.35);
+  box-shadow:
+    0 0 0 1px rgba(193,53,132,0.1),
+    0 20px 60px rgba(193,53,132,0.12),
+    0 4px 20px rgba(0,0,0,0.4);
+}
+
+.platform-card--instagram[data-status="active"]:hover .platform-card__bg {
+  opacity: 1;
+  background: radial-gradient(ellipse at 20% 50%, rgba(193,53,132,0.12) 0%, transparent 70%);
+}
+
+.platform-card--instagram[data-status="active"]:hover .platform-card__shine { opacity: 1; }
+
+.platform-card--instagram[data-status="active"]:hover .platform-card__icon svg {
+  transform: scale(1.08);
+}
+
+.platform-card--instagram[data-status="active"]:hover .platform-card__arrow {
+  opacity: 1;
+  transform: translateX(0);
+  color: #c13584;
+}
+
+.platform-card--instagram[data-status="active"]:active {
+  transform: translateY(-1px) scale(0.99);
+  transition-duration: 0.1s;
+}

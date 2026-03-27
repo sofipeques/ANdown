@@ -44,17 +44,12 @@ def _url_permitida(url: str) -> bool:
         return False
     try:
         dominio = urlparse(url).netloc.lower().split(':')[0]
-        # vm.tiktok.com y vt.tiktok.com son URLs cortas de TikTok
         return dominio in _DOMINIOS_PERMITIDOS
     except Exception:
         return False
 
 
 # ── Extracción de info ────────────────────────────────────────────────────────
-# TikTok siempre descarga en la mejor calidad disponible.
-# No exponemos selector de formato — simplificamos la UI.
-# Sin marca de agua via extractor-args.
-
 _YDL_OPTS_BASE = {
     'quiet':       True,
     'no_warnings': True,
@@ -67,30 +62,56 @@ _YDL_OPTS_BASE = {
 
 def _procesar_entrada_info(info):
     """
-    Devuelve la misma estructura que YouTube para que multi.js funcione sin cambios:
-      formatos: lista con un entry 'best'
-      peso_video / peso_audio separados
-      peso: alias de peso_video para la vista simple
+    Separa peso_video y peso_audio correctamente para TikTok.
+
+    TikTok suele devolver formatos combinados (vcodec + acodec en el mismo
+    stream). El campo `abr` en esos formatos es el bitrate TOTAL del stream,
+    no el bitrate de audio puro, por lo que NO sirve para estimar el MP3.
+
+    Estrategia para peso_audio, en orden de preferencia:
+      1. abr × duración de un stream SOLO-AUDIO (vcodec == 'none')
+      2. filesize directo de un stream solo-audio
+      3. Fallback: 30% del peso_video (representativo para TikTok)
     """
-    peso_video = None
-    peso_audio = None
+    peso_video       = None
+    duracion         = info.get('duration', 0) or 0
+    mejor_audio_abr  = 0   # kbps — solo de streams vcodec=='none'
+    mejor_audio_size = 0   # bytes — solo de streams vcodec=='none'
 
     for f in info.get('formats', []):
         vcodec = f.get('vcodec', 'none')
         acodec = f.get('acodec', 'none')
         s      = f.get('filesize') or f.get('filesize_approx') or 0
-        if not s:
-            continue
-        if vcodec != 'none':
+        abr    = f.get('abr') or 0
+
+        # Peso del video: mejor formato que tenga imagen
+        if vcodec != 'none' and s:
             if peso_video is None or s > peso_video:
                 peso_video = s
-        elif acodec != 'none':
-            if peso_audio is None or s > peso_audio:
-                peso_audio = s
 
-    # Si no hay stream solo-audio separado, estimamos ~10% del video
-    if peso_audio is None and peso_video:
-        peso_audio = int(peso_video * 0.10)
+        # Datos de audio: SOLO de streams sin video
+        # Los streams combinados tienen abr = bitrate total, no sirven para MP3
+        if vcodec == 'none' and acodec != 'none':
+            if abr > mejor_audio_abr:
+                mejor_audio_abr = abr
+            if s and s > mejor_audio_size:
+                mejor_audio_size = s
+
+    # Calcular peso_audio
+    if mejor_audio_abr > 0 and duracion > 0:
+        # Desde bitrate puro de audio × duración
+        peso_audio = int((mejor_audio_abr * 1000 / 8) * duracion)
+        log.debug(f'[TT/Info] peso_audio vía abr={mejor_audio_abr}kbps × {duracion}s = {peso_audio}B')
+    elif mejor_audio_size > 0:
+        # Filesize directo del stream solo-audio
+        peso_audio = mejor_audio_size
+        log.debug(f'[TT/Info] peso_audio vía filesize = {peso_audio}B')
+    elif peso_video:
+        # Fallback: 30% del video (más realista que 10% para TikTok)
+        peso_audio = int(peso_video * 0.30)
+        log.debug(f'[TT/Info] peso_audio vía fallback 30% = {peso_audio}B')
+    else:
+        peso_audio = None
 
     formato_best = {
         'id':      'best',
@@ -151,14 +172,7 @@ def _extraer_info(url):
 
 
 # ── Comando de descarga sin marca de agua ────────────────────────────────────
-# Se construye en routes.py porque es específico de TikTok.
-# core/downloader.generar_stream acepta un comando personalizado.
-
 def _comando_tiktok(tipo, output_tpl):
-    """
-    Retorna el comando yt-dlp para TikTok.
-    --extractor-args quita la marca de agua usando la API interna de TikTok.
-    """
     from utils import RUNTIME_DIR
     cmd = [
         'yt-dlp', '--newline', '--no-part', '--no-colors',
@@ -170,13 +184,11 @@ def _comando_tiktok(tipo, output_tpl):
     if tipo == 'audio':
         cmd.extend(['-x', '--audio-format', 'mp3', '--audio-quality', '0', '-o', output_tpl])
     else:
-        # best: mejor calidad disponible sin marca de agua
         cmd.extend(['-f', 'best', '-o', output_tpl])
     return cmd
 
 
-# ── Generador SSE propio (usa comando personalizado) ─────────────────────────
-import os
+# ── Generador SSE propio ─────────────────────────────────────────────────────
 import time
 import threading
 import subprocess
@@ -186,10 +198,6 @@ from werkzeug.utils import secure_filename
 from core.downloader import registrar_proceso, quitar_proceso, lector_stdout
 
 def _generar_stream_tiktok(url, tipo, titulo_raw, token):
-    """
-    Generador SSE para TikTok. Similar a core/downloader.generar_stream
-    pero inyecta el comando con --extractor-args de TikTok.
-    """
     def evento(data):
         return f"data: {data}\n\n"
 
@@ -368,8 +376,6 @@ def analizar():
         return jsonify({"error": "Solo se permiten URLs de TikTok."}), 403
     try:
         resultados = _extraer_info(url)
-        # Video único → devolver objeto directo (igual que YouTube)
-        # Colección  → devolver lista para que el frontend la maneje
         if len(resultados) == 1 and not resultados[0].get('es_multi'):
             return jsonify(resultados[0])
         return jsonify({'items': resultados, 'es_coleccion': True})

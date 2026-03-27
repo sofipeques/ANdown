@@ -23,6 +23,8 @@ function setMode(m) {
     simpleMode = m;
     localStorage.setItem('tt_mode', m);
     updateSimpleUI();
+    // Refrescar peso mostrado si ya hay un video analizado
+    if (videoData) _actualizarMetaPesoSimple(videoData);
     sincronizarAlturaFlip();
 }
 
@@ -80,7 +82,6 @@ function renderVideoData(data) {
     durEl.innerText     = dur ? `⏱ ${dur}` : '';
     durEl.style.display = dur ? '' : 'none';
 
-    // Peso: video usa peso_video, audio usa peso_audio
     _actualizarMetaPesoSimple(data);
 
     resetBtnDownload();
@@ -106,7 +107,6 @@ function resetBtnDownload() {
     btn.innerText     = 'Descargar';
     btn.style.background = 'var(--success)';
     btn.onclick       = iniciarDescarga;
-    // Actualizar peso al resetear (por si cambió el modo)
     if (videoData) _actualizarMetaPesoSimple(videoData);
     setTimeout(() => sincronizarAlturaFlip(), 50);
 }
@@ -213,23 +213,16 @@ function iniciarDescargaColeccion() {
     btn.innerText = 'Descargar colección';
 }
 
-// ── Actualizar peso al cambiar modo (video ↔ audio) ───────────────────────────
-// Override de setMode para refrescar el peso en la vista simple
-const _setModeOriginal = setMode;
 
 // ══════════════════════════════════════════════════════════════════════════════
 // OVERRIDES DE multi.js PARA TIKTOK
-// Se redefinen aquí porque tiktok_simple.js carga DESPUÉS de multi.js
 // ══════════════════════════════════════════════════════════════════════════════
 
-// ── 1. Ocultar global-quality y el select de resolución por item ──────────────
 window.addEventListener('DOMContentLoaded', () => {
-    // Ocultar selector de calidad global (no aplica en TikTok)
     const gq = document.getElementById('global-quality');
     if (gq) gq.style.display = 'none';
 });
 
-// ── 2. Override _crearItemNormal: sin select de resolución, con badge formato ─
 function _crearItemNormal(i, item) {
     const d   = item.data;
     const dur = d.duracion ? formatDuracion(d.duracion) : '';
@@ -238,7 +231,6 @@ function _crearItemNormal(i, item) {
     el.className = 'multi-item' + (item.selected ? '' : ' deselected');
     el.id        = `mi-${i}`;
 
-    // Peso inicial según el modo actual
     const bytesVideo = (d.peso_video || d.peso) || null;
     const bytesAudio = d.peso_audio || null;
     const bytesInit  = item.modo === 'audio' ? bytesAudio : bytesVideo;
@@ -269,7 +261,6 @@ function _crearItemNormal(i, item) {
     return el;
 }
 
-// ── 3. Override _actualizarSizeItem: usa peso_video / peso_audio separados ────
 function _actualizarSizeItem(i) {
     const item   = multiItems[i];
     const sizeEl = document.getElementById(`mi-size-${i}`);
@@ -282,7 +273,6 @@ function _actualizarSizeItem(i) {
     sizeEl.innerText = bytes ? `~${formatPeso(bytes)}` : '—';
 }
 
-// ── 4. Override _actualizarPesoTotalMulti: usa peso_video / peso_audio ────────
 function _actualizarPesoTotalMulti() {
     const el = document.getElementById('multi-peso-total');
     if (!el) return;
@@ -304,7 +294,6 @@ function _actualizarPesoTotalMulti() {
         total > 0 ? `~${formatPeso(total)}` : 'desconocido';
 }
 
-// ── 5. Override descargarSeleccionados: formato siempre 'best', badge correcto ─
 function descargarSeleccionados() {
     const seleccionados = multiItems.filter(item => item.selected && !item.error);
 
@@ -336,7 +325,6 @@ function descargarSeleccionados() {
     });
 }
 
-// ── 6. Override _reconstruirCalidadesGlobal: no-op en TikTok ─────────────────
 function _reconstruirCalidadesGlobal() {
     // TikTok no tiene calidades, no hay nada que reconstruir
 }

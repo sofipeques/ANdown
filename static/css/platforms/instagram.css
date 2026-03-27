@@ -1,0 +1,228 @@
+/* ============================================================
+   platforms/instagram.css — v2
+   Reels + Fotos + Stories + pestañas
+   ============================================================ */
+
+:root {
+    --ig-1:      #833ab4;
+    --ig-2:      #fd1d1d;
+    --ig-3:      #fcb045;
+    --ig-accent: #c13584;
+}
+
+/* ── Título con gradiente ────────────────────────────────────── */
+.main-card h2 {
+    background: linear-gradient(90deg, var(--ig-1), var(--ig-2), var(--ig-3));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* ── Cookies bar ─────────────────────────────────────────────── */
+.ig-cookies-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: .75em;
+    font-weight: 600;
+    color: #888;
+    background: rgba(255,255,255,.04);
+    border: 1px solid #2a2a2a;
+    border-radius: 8px;
+    padding: 7px 12px;
+    margin: -10px 0 14px;
+    transition: all .3s;
+}
+.ig-cookies-bar.activas {
+    color: #a855f7;
+    background: rgba(168,85,247,.08);
+    border-color: rgba(168,85,247,.25);
+}
+.ig-cookies-icon { font-size: .95em; }
+
+/* ── Pestañas ────────────────────────────────────────────────── */
+.ig-tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 18px;
+}
+
+.ig-tab {
+    flex: 1;
+    padding: 9px 6px;
+    border: 1px solid var(--border);
+    background: #1e1e1e;
+    color: #666;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: .8em;
+    font-weight: 700;
+    transition: all .2s;
+    white-space: nowrap;
+}
+.ig-tab:hover  { border-color: #444; color: #aaa; }
+.ig-tab.active {
+    background: linear-gradient(135deg, rgba(131,58,180,.15), rgba(253,29,29,.1));
+    border-color: var(--ig-accent);
+    color: #e070b0;
+}
+
+/* ── Nota de calidad ─────────────────────────────────────────── */
+.ig-quality-note {
+    font-size: .78em;
+    color: #666;
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-bottom: 4px;
+    text-align: center;
+}
+
+/* ── Warning Stories sin cookies ─────────────────────────────── */
+.ig-stories-warning {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    background: rgba(253,29,29,.06);
+    border: 1px solid rgba(253,29,29,.2);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: .8em;
+    color: #ff8888;
+    margin-bottom: 14px;
+    line-height: 1.5;
+}
+
+/* ── Hint multi ──────────────────────────────────────────────── */
+.ig-multi-hint {
+    font-size: .75em;
+    color: #555;
+    background: #161616;
+    border: 1px solid #222;
+    border-radius: 8px;
+    padding: 7px 12px;
+    margin-bottom: 14px;
+    line-height: 1.4;
+}
+
+/* ── Foto individual ─────────────────────────────────────────── */
+/* reutiliza .thumb-container y .thumb de base.css */
+
+/* ── Carrusel ────────────────────────────────────────────────── */
+.ig-carrusel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 12px 0 10px;
+    padding: 0 2px;
+}
+.ig-carrusel-count {
+    font-size: .85em;
+    font-weight: 700;
+    color: var(--ig-accent);
+}
+.ig-carrusel-peso { font-size: .76em; color: #666; }
+
+.ig-carrusel-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    margin-bottom: 12px;
+}
+.ig-carrusel-thumb {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 6px;
+    background: #111;
+}
+.ig-carrusel-more {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #1e1e1e;
+    border: 1px solid #2a2a2a;
+    border-radius: 6px;
+    font-size: .85em;
+    color: #666;
+    font-weight: 700;
+}
+
+/* ── Colección ───────────────────────────────────────────────── */
+.ig-collection-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    padding: 0 2px;
+}
+#collection-count { font-size: .85em; font-weight: 700; color: var(--ig-accent); }
+.ig-collection-note { font-size: .72em; color: #555; }
+
+.ig-collection-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 14px;
+    max-height: 260px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+.ig-collection-list::-webkit-scrollbar { width: 4px; }
+.ig-collection-list::-webkit-scrollbar-track { background: #1a1a1a; border-radius: 2px; }
+.ig-collection-list::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+
+.ig-collection-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #1e1e1e;
+    border: 1px solid #2a2a2a;
+    border-radius: 8px;
+    padding: 8px 10px;
+}
+.ig-collection-thumb {
+    width: 48px; height: 48px;
+    object-fit: cover; border-radius: 6px;
+    flex-shrink: 0; background: #000;
+}
+.ig-collection-badge {
+    font-size: .75em; color: #888;
+    flex-shrink: 0;
+}
+.ig-collection-title {
+    flex: 1; font-size: .8em; color: #ccc;
+    overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+}
+.ig-collection-dur { font-size: .72em; color: #555; flex-shrink: 0; }
+.ig-collection-more {
+    font-size: .78em; color: #555; text-align: center;
+    padding: 6px; border: 1px dashed #2a2a2a; border-radius: 6px;
+}
+
+/* ── Badge calidad en multi ──────────────────────────────────── */
+.ig-quality-badge {
+    color: var(--ig-accent);
+    background: rgba(193,53,132,.08);
+    border: 1px solid rgba(193,53,132,.18);
+    cursor: default;
+}
+
+/* ── Botón home ──────────────────────────────────────────────── */
+.btn-home {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 32px; height: 32px; border-radius: 8px;
+    border: 1px solid rgba(255,255,255,.10);
+    background: transparent; color: rgba(255,255,255,.45);
+    cursor: pointer; flex-shrink: 0; text-decoration: none;
+    transition: background .2s, border-color .2s, color .2s;
+}
+.btn-home svg { width: 16px; height: 16px; display: block; pointer-events: none; }
+.btn-home:hover {
+    background: rgba(193,53,132,.08);
+    border-color: rgba(193,53,132,.3);
+    color: var(--ig-accent);
+}
+.btn-home:active { transform: scale(.95); transition-duration: .08s; }

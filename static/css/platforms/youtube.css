@@ -1,0 +1,42 @@
+/* ============================================================
+   platforms/youtube.css
+   Estilos específicos de YouTube — cargado solo en /youtube
+   ============================================================ */
+
+/* ── Botón volver al inicio ───────────────────────────────── */
+.btn-home {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    background: transparent;
+    color: rgba(255, 255, 255, 0.45);
+    cursor: pointer;
+    flex-shrink: 0;
+    text-decoration: none;
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease;
+}
+
+.btn-home svg {
+    width: 16px;
+    height: 16px;
+    display: block;
+    pointer-events: none;
+}
+
+.btn-home:hover {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(255, 255, 255, 0.22);
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.btn-home:active {
+    transform: scale(0.95);
+    transition-duration: 0.08s;
+}

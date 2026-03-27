@@ -1,0 +1,55 @@
+/* ═══════════════════════════════════════════════════════════════
+   MULTI — Vista de descarga múltiple
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Barra de controles globales ───────────────────────────────── */
+.multi-global-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 10px; padding: 10px 12px; background: #1e1e1e;
+    border: 1px solid var(--border); border-radius: 10px;
+    margin-bottom: 14px; flex-wrap: wrap;
+}
+.multi-global-left  { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.multi-global-right { display: flex; gap: 6px; }
+.multi-global-bar select { width: auto; padding: 6px 10px; font-size: .8em; border-radius: 7px; }
+
+/* ── Lista de items ────────────────────────────────────────────── */
+#multi-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
+
+.multi-item {
+    background: var(--card2); border: 1px solid var(--border); border-radius: 12px;
+    padding: 10px 12px; display: flex; gap: 10px; align-items: flex-start;
+    transition: opacity .2s;
+}
+.multi-item.deselected { opacity: .4; }
+.multi-item.error-item { border-color: #ff5555; }
+
+.multi-item-check  { margin-top: 3px; width: 16px; height: 16px; cursor: pointer; flex-shrink: 0; accent-color: var(--accent); }
+.multi-item-thumb  { width: 72px; height: 42px; object-fit: cover; border-radius: 6px; flex-shrink: 0; background: #000; }
+.multi-item-info   { flex: 1; min-width: 0; }
+.multi-item-title  { font-size: .82em; font-weight: 600; color: #ddd; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 6px; }
+
+.multi-item-controls { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.multi-item-controls .toggle-group { flex: none; }
+.multi-item-controls .toggle-btn   { padding: 4px 8px; font-size: .72em; flex: none; }
+.multi-item-controls select        { flex: 1; min-width: 100px; padding: 4px 8px; font-size: .78em; border-radius: 6px; }
+
+.multi-item-size  { font-size: .72em; color: #666; background: #2a2a2a; padding: 3px 7px; border-radius: 5px; white-space: nowrap; }
+.multi-item-error { font-size: .78em; color: #ff5555; margin-top: 4px; }
+
+/* ── Acciones y peso total ─────────────────────────────────────── */
+.multi-actions { margin-top: 4px; }
+
+.multi-peso-total {
+    display: flex; align-items: center; gap: 8px;
+    padding: 9px 12px; margin-bottom: 10px;
+    background: #1a1f1a; border: 1px solid #2a3a2a;
+    border-radius: 8px;
+}
+.multi-peso-label {
+    font-size: .75em; color: #666; font-weight: 600;
+    text-transform: uppercase; letter-spacing: .4px;
+}
+.multi-peso-valor {
+    font-size: .85em; color: #4caf50; font-weight: 700; margin-left: auto;
+}

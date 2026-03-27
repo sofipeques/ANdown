@@ -1,0 +1,174 @@
+/* ═══════════════════════════════════════════════════════════════
+   BASE — Variables, reset, layout global, inputs, botones
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Variables ─────────────────────────────────────────────────── */
+:root {
+    --bg:       #0f0f0f;
+    --card:     #1a1a1a;
+    --card2:    #212121;
+    --accent:   #3ea6ff;
+    --success:  #2ba640;
+    --text:     #ffffff;
+    --input-bg: #121212;
+    --border:   #2e2e2e;
+}
+
+/* ── Reset ─────────────────────────────────────────────────────── */
+* { box-sizing: border-box; }
+
+body {
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    margin: 0;
+}
+
+.container { width: 100%; max-width: 520px; }
+
+/* ── Panel principal ───────────────────────────────────────────── */
+.main-card {
+    background: var(--card);
+    padding: 24px 28px 28px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.5);
+}
+
+.card-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 22px;
+}
+
+h2 {
+    color: var(--accent);
+    margin: 0;
+    font-weight: 800;
+    letter-spacing: -1px;
+    font-size: 1.3em;
+}
+
+/* ── Secciones ─────────────────────────────────────────────────── */
+.section { margin-bottom: 20px; }
+
+label {
+    display: block;
+    font-size: .78em;
+    color: #888;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: .5px;
+}
+
+/* ── Inputs ────────────────────────────────────────────────────── */
+input[type="text"], textarea, select {
+    width: 100%; padding: 12px 14px; border-radius: 10px;
+    border: 1px solid var(--border); background: var(--input-bg);
+    color: white; font-size: .95em; font-family: inherit;
+}
+input:disabled, textarea:disabled { opacity: .45; cursor: not-allowed; }
+input:focus, textarea:focus, select:focus { outline: none; border-color: var(--accent); }
+textarea { resize: vertical; min-height: 90px; line-height: 1.5; }
+
+/* ── Toggle modo ───────────────────────────────────────────────── */
+.toggle-group { display: flex; gap: 8px; }
+
+.toggle-btn {
+    flex: 1; padding: 10px; border: 1px solid var(--border);
+    background: #252525; color: #888; cursor: pointer;
+    border-radius: 8px; transition: all .2s; font-weight: 600; font-size: .88em;
+}
+.toggle-btn.active {
+    background: var(--accent); color: white; border-color: var(--accent);
+    box-shadow: 0 4px 12px rgba(62,166,255,.3);
+}
+.toggle-group.mini .toggle-btn { padding: 6px 10px; font-size: .78em; flex: none; }
+
+/* ── Botones principales ───────────────────────────────────────── */
+.btn-main {
+    width: 100%; padding: 14px; border: none; border-radius: 10px;
+    font-weight: 700; cursor: pointer; margin-top: 12px;
+    font-size: .95em; transition: transform .1s, opacity .2s;
+}
+.btn-main:active   { transform: scale(.98); }
+.btn-main:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+
+#btn-analyze       { background: var(--text); color: #000; }
+#btn-download      { background: var(--success); color: white; display: none; }
+.btn-analyze-multi { background: var(--accent); color: white; }
+.btn-dl-selected   { background: var(--success); color: white; }
+
+/* ── Botones pequeños ──────────────────────────────────────────── */
+.btn-small {
+    padding: 5px 10px; border: 1px solid var(--border); border-radius: 6px;
+    background: #252525; color: #aaa; cursor: pointer;
+    font-size: .75em; font-weight: 600; transition: all .15s; white-space: nowrap;
+}
+.btn-small:hover     { border-color: #555; color: white; }
+.btn-clear-all:hover { border-color: #ff5555; color: #ff5555; }
+.btn-desel-all:hover { border-color: #ff5555; color: #ff5555; }
+
+/* ── Botón carpeta ─────────────────────────────────────────────── */
+.btn-flip {
+    background: #252525; border: 1px solid var(--border); color: #888;
+    padding: 7px 12px; border-radius: 8px; cursor: pointer;
+    font-size: .8em; font-weight: 600; transition: all .2s; white-space: nowrap;
+}
+.btn-flip:hover { background: var(--accent); color: white; border-color: var(--accent); }
+
+.btn-folder {
+    background: #252525; border: 1px solid var(--border); color: #aaa;
+    padding: 7px 10px; border-radius: 8px; cursor: pointer;
+    font-size: .9em; transition: all .2s; line-height: 1;
+}
+.btn-folder:hover    { background: #333; border-color: #555; color: white; }
+.btn-folder:disabled { opacity: .5; cursor: not-allowed; }
+
+/* ── Vista simple — thumbnail ──────────────────────────────────── */
+.thumb-container {
+    width: 100%; border-radius: 12px; overflow: hidden;
+    margin: 16px 0 10px; aspect-ratio: 16/9; background: #000;
+}
+.thumb { width: 100%; height: 100%; object-fit: cover; }
+
+.video-title {
+    font-size: .95em; font-weight: 600; margin: 6px 0 4px;
+    display: -webkit-box; -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical; overflow: hidden;
+}
+
+.video-meta {
+    display: flex; gap: 8px; font-size: .76em; color: #888;
+    margin-bottom: 14px; flex-wrap: wrap;
+}
+.video-meta span { background: #252525; padding: 3px 8px; border-radius: 5px; }
+
+.quality-row { display: flex; align-items: center; gap: 10px; }
+.quality-row select { flex: 1; cursor: pointer; }
+#quality-size {
+    font-size: .8em; color: #888; white-space: nowrap;
+    background: #252525; padding: 6px 10px; border-radius: 7px;
+    min-width: 70px; text-align: center;
+}
+
+/* ── Barra de carpeta de destino ───────────────────────────────── */
+.folder-bar {
+    display: flex; align-items: center; gap: 6px;
+    margin: -10px 0 14px; padding: 7px 10px;
+    background: #161616; border: 1px solid #222;
+    border-radius: 8px; overflow: hidden;
+}
+.folder-bar-label {
+    font-size: .72em; color: #555; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .4px; white-space: nowrap;
+}
+.folder-bar-path {
+    font-size: .75em; color: #666; white-space: nowrap;
+    overflow: hidden; text-overflow: ellipsis; direction: rtl;
+    text-align: left; flex: 1;
+}

@@ -1,0 +1,405 @@
+/* ============================================================
+   home.css — Pantalla de inicio / Launcher
+   DLHub · Fase 1
+   ============================================================ */
+
+/* ---------- Variables ---------- */
+:root {
+  --bg:           #0a0a0f;
+  --bg-card:      #111118;
+  --bg-card-h:    #16161f;
+  --border:       rgba(255,255,255,0.06);
+  --border-h:     rgba(255,255,255,0.14);
+  --text-primary: #f0f0f5;
+  --text-muted:   #6b6b80;
+  --text-dim:     #3a3a4a;
+
+  /* acentos por plataforma */
+  --yt:           #ff0000;
+  --yt-glow:      rgba(255,0,0,0.18);
+  --tt:           #69c9d0;
+  --tt-glow:      rgba(105,201,208,0.12);
+  --ig:           #e1306c;
+  --ig-glow:      rgba(225,48,108,0.12);
+  --tw:           #e7e9ea;
+  --tw-glow:      rgba(231,233,234,0.08);
+
+  --font-display: 'Syne', sans-serif;
+  --font-body:    'DM Sans', sans-serif;
+
+  --radius-card:  18px;
+  --transition:   0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ---------- Reset base ---------- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { height: 100%; }
+
+body {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 15px;
+  overflow-x: hidden;
+  position: relative;
+}
+
+a { text-decoration: none; color: inherit; }
+
+/* ---------- Fondo decorativo ---------- */
+.bg-grid {
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.bg-glow {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(120px);
+  pointer-events: none;
+  z-index: 0;
+  animation: drift 14s ease-in-out infinite alternate;
+}
+
+.glow-1 {
+  width: 600px; height: 600px;
+  background: rgba(255,0,0,0.07);
+  top: -200px; left: -150px;
+  animation-delay: 0s;
+}
+
+.glow-2 {
+  width: 400px; height: 400px;
+  background: rgba(105,201,208,0.05);
+  bottom: -100px; right: -100px;
+  animation-delay: -5s;
+}
+
+.glow-3 {
+  width: 300px; height: 300px;
+  background: rgba(225,48,108,0.05);
+  top: 50%; left: 60%;
+  animation-delay: -9s;
+}
+
+@keyframes drift {
+  0%   { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(30px, 20px) scale(1.08); }
+}
+
+/* ---------- Layout principal ---------- */
+.launcher {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  gap: 48px;
+}
+
+/* ---------- Header ---------- */
+.launcher__header {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  animation: fadeUp 0.6s ease both;
+}
+
+.launcher__logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.launcher__logo-img {
+  width: 40px;
+  height: 40px;
+}
+
+.launcher__logo-text {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: var(--text-primary);
+}
+
+.launcher__logo-text em {
+  font-style: normal;
+  color: var(--yt);
+}
+
+.launcher__subtitle {
+  font-family: var(--font-body);
+  font-weight: 300;
+  font-size: 15px;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+}
+
+/* ---------- Grilla de plataformas ---------- */
+.platforms {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  width: 100%;
+  max-width: 760px;
+  animation: fadeUp 0.7s ease 0.1s both;
+}
+
+/* ---------- Tarjeta base ---------- */
+.platform-card {
+  position: relative;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  overflow: hidden;
+  cursor: pointer;
+  transition:
+    transform var(--transition),
+    border-color var(--transition),
+    box-shadow var(--transition);
+}
+
+/* fondo decorativo de la tarjeta */
+.platform-card__bg {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity var(--transition);
+  border-radius: var(--radius-card);
+}
+
+/* efecto shine al hover */
+.platform-card__shine {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,0.06) 0%,
+    transparent 60%
+  );
+  opacity: 0;
+  transition: opacity var(--transition);
+  pointer-events: none;
+}
+
+.platform-card__inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 24px 22px;
+}
+
+/* icono */
+.platform-card__icon svg {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  flex-shrink: 0;
+  transition: transform var(--transition);
+}
+
+/* info textual */
+.platform-card__info {
+  flex: 1;
+  min-width: 0;
+}
+
+.platform-card__name {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+  margin-bottom: 4px;
+}
+
+.platform-card__desc {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+/* badge */
+.platform-card__badge {
+  font-family: var(--font-display);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  border-radius: 100px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.platform-card__badge--active {
+  background: rgba(0,200,80,0.12);
+  color: #00c850;
+  border: 1px solid rgba(0,200,80,0.2);
+}
+
+.platform-card__badge--soon {
+  background: rgba(255,255,255,0.05);
+  color: var(--text-dim);
+  border: 1px solid rgba(255,255,255,0.07);
+}
+
+/* flecha (solo activos) */
+.platform-card__arrow {
+  color: var(--text-muted);
+  flex-shrink: 0;
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity var(--transition), transform var(--transition);
+}
+
+.platform-card__arrow svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+
+/* candado (próximamente) */
+.platform-card__lock {
+  color: var(--text-dim);
+  flex-shrink: 0;
+  opacity: 0.4;
+}
+
+.platform-card__lock svg {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+/* ---------- Estado: PRÓXIMAMENTE ---------- */
+.platform-card[data-status="soon"] {
+  cursor: default;
+  opacity: 0.55;
+}
+
+.platform-card[data-status="soon"]:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: var(--border);
+}
+
+/* ---------- YouTube (activo) ---------- */
+.platform-card--youtube[data-status="active"]:hover {
+  transform: translateY(-4px) scale(1.01);
+  border-color: rgba(255,0,0,0.35);
+  box-shadow:
+    0 0 0 1px rgba(255,0,0,0.1),
+    0 20px 60px rgba(255,0,0,0.12),
+    0 4px 20px rgba(0,0,0,0.4);
+}
+
+.platform-card--youtube[data-status="active"]:hover .platform-card__bg {
+  opacity: 1;
+  background: radial-gradient(ellipse at 20% 50%, var(--yt-glow) 0%, transparent 70%);
+}
+
+.platform-card--youtube[data-status="active"]:hover .platform-card__shine {
+  opacity: 1;
+}
+
+.platform-card--youtube[data-status="active"]:hover .platform-card__icon svg {
+  transform: scale(1.08);
+}
+
+.platform-card--youtube[data-status="active"]:hover .platform-card__arrow {
+  opacity: 1;
+  transform: translateX(0);
+  color: var(--yt);
+}
+
+/* click feedback */
+.platform-card--youtube[data-status="active"]:active {
+  transform: translateY(-1px) scale(0.99);
+  transition-duration: 0.1s;
+}
+
+/* ---------- Footer ---------- */
+.launcher__footer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--text-dim);
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  animation: fadeUp 0.7s ease 0.25s both;
+}
+
+.launcher__footer-dot {
+  opacity: 0.4;
+}
+
+/* ---------- Animación de entrada ---------- */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* entrada escalonada de las tarjetas */
+.platform-card:nth-child(1) { animation: fadeUp 0.5s ease 0.15s both; }
+.platform-card:nth-child(2) { animation: fadeUp 0.5s ease 0.22s both; }
+.platform-card:nth-child(3) { animation: fadeUp 0.5s ease 0.29s both; }
+.platform-card:nth-child(4) { animation: fadeUp 0.5s ease 0.36s both; }
+
+/* ---------- Shake (tarjetas próximamente) ---------- */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%       { transform: translateX(-5px); }
+  40%       { transform: translateX(5px); }
+  60%       { transform: translateX(-3px); }
+  80%       { transform: translateX(3px); }
+}
+
+.platform-card.shake {
+  animation: shake 0.35s ease;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 540px) {
+  .platforms {
+    grid-template-columns: 1fr;
+  }
+
+  .launcher {
+    padding: 36px 16px;
+    gap: 36px;
+  }
+
+  .platform-card__inner {
+    padding: 20px 18px;
+  }
+
+  .platform-card__badge {
+    display: none;
+  }
+}

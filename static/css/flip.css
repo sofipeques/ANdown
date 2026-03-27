@@ -1,0 +1,47 @@
+/* ═══════════════════════════════════════════════════════════════
+   FLIP 3D — Sistema de paneles con animación 3D
+   
+   El flip-wrapper tiene altura explícita (gestionada por JS).
+   flip-inner contiene las dos caras con preserve-3d.
+   Ambas caras tienen backface-visibility:hidden para que la
+   cara trasera sea invisible cuando mira para atrás.
+   overflow:hidden en el wrapper evita que la cara rotada
+   se cuele visualmente fuera de los límites.
+   ═══════════════════════════════════════════════════════════════ */
+
+.flip-wrapper {
+    perspective: 1400px;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 20px;
+    transition: height .65s cubic-bezier(.4,0,.2,1);
+}
+
+.flip-inner {
+    width: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform .65s cubic-bezier(.4,0,.2,1);
+}
+
+.flip-inner.flipped {
+    transform: rotateY(180deg);
+}
+
+.flip-face {
+    width: 100%;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+/* Cara frontal: flujo normal, define la altura natural del inner */
+.flip-front {
+    position: relative;
+}
+
+/* Cara trasera: siempre absolute, no afecta el flujo */
+.flip-back {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    transform: rotateY(180deg);
+}
